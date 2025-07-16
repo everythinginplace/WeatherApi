@@ -1,4 +1,4 @@
-﻿namespace WeatherApi
+﻿namespace WeatherApi.Entities
 {
     public class WeatherByCityRequest
     {

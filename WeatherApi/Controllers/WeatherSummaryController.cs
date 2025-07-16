@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using WeatherApi.Entities;
+using WeatherApi.Services;
 
 namespace WeatherApi.Controllers
 {
@@ -12,10 +14,12 @@ namespace WeatherApi.Controllers
         };
 
         private readonly ILogger<WeatherSummaryController> _logger;
+        private readonly OpenWeatherClient _openWeatherClient;
 
-        public WeatherSummaryController(ILogger<WeatherSummaryController> logger)
+        public WeatherSummaryController(ILogger<WeatherSummaryController> logger, OpenWeatherClient openWeatherClient)
         {
             _logger = logger;
+            _openWeatherClient = openWeatherClient;
         }
 
         [HttpGet(Name = "GetWeatherSummary")]
@@ -38,13 +42,14 @@ namespace WeatherApi.Controllers
                 throw new ArgumentException("City is required.", nameof(request.City));
             }
 
-            return new WeatherSummary
-            {
-                Location = request.City,
-                Date = DateOnly.FromDateTime(DateTime.Now.Date),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            };
+            var coordinates = _openWeatherClient.GetCoordinatesByLocation(request.City).Result;
+
+            var weatherSummary = _openWeatherClient.GetWeatherByCoordinates(coordinates).Result;
+
+            weatherSummary.Date = DateOnly.FromDateTime(DateTime.Now.Date);
+            weatherSummary.Location = request.City;
+
+            return weatherSummary;
         }
     }
 }

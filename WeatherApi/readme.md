@@ -48,3 +48,12 @@ Returns a list of 5 weather forecasts with random temperature and summary.
 - `Controllers/WeatherForecastController.cs`: Main API endpoint.
 - `Program.cs`: Application startup and middleware configuration.
 
+
+
+## TODO
+
+- Proper validation and error handling (eg OpenWeatherClient - all the things that can go wrong, handle gracefully)
+- Integration tests
+- Create an interface for OpenWeatherClient and set up DI for it
+- Does all the code that's in WeatherSummaryController belong there? At the moment it deals with the OpenWeather API by first calling to get the lat + long and then calling to get the weather date. Maybe extract this out?
+- Make a little url builder helper which handles inputs whether they have trailing slashes or not
